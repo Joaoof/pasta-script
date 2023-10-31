@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const ler = JSON.parse(fs.readFileSync('./files.json'))
+let ler = JSON.parse(fs.readFileSync('./files.json'))
 
 function onPath(pasta) {
     if (ler[pasta] === "on") {
@@ -12,12 +12,27 @@ function onPath(pasta) {
     }
 }
 
-const estado = "" 
+
+fs.rename('./pdfs', './seila', (err) => {
+    if (err) {
+        console.log("Erro ao renomeia")
+    }
+})
+
+const estado = "on" 
 if(!estado) {
     console.error('Os estado podem ser somente on, ou off');
 }
 ler["./pdf/"] = estado;
 ler["./pdf/teste.txt"] = estado;
+
+// Atualiza o caminho da pasta no objeto JSON
+ler = Object.fromEntries(
+    Object.entries(ler).map(([key, value]) => [
+      key.replace('./pdf/', './seila/'),
+      value
+    ])
+  );
 
 // Salva as alterações no arquivo JSON
 fs.writeFileSync('./files.json', JSON.stringify(ler))
